@@ -14,7 +14,7 @@ public class programa {
         ConexaoMySql teste = new ConexaoMySql();
         
         teste.conectar();
-        
+        System.out.println(teste.getStatus());
         
     }
 }
