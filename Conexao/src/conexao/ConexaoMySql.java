@@ -2,27 +2,27 @@ package conexao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.JOptionPane;
 
 /**
- *
  * @author Diego Barbosa
  */
 public class ConexaoMySql {
 
     private boolean status = false;
     private Connection connection = null;
-    private Statement statement;
+    private PreparedStatement statement;
     private ResultSet resultSet;
 
     private String servidor = "localhost";
-    private String database = "dbalunoscurso";
+    private String database = "";
     private String porta = "3306";
     private String usuario = "root";
-    private String senha = "";
+    private String senha = "privada3";
 
     public ConexaoMySql() {
 
@@ -36,8 +36,8 @@ public class ConexaoMySql {
         this.senha = senha;
     }
 
-    public String url() {
-        String url = "jdbc:mysql://" + this.getServidor() + ":" + this.getPorta() + "/" + this.database + "?serverTimezone=UTC";
+    private String url() {
+        String url = "jdbc:mysql://" + this.servidor + ":" + this.porta + "/" + this.database + "?serverTimezone=UTC";
         return url;
     }
 
@@ -52,18 +52,19 @@ public class ConexaoMySql {
 
             // Conecta no banco de dados
             this.setConnection((Connection) DriverManager.getConnection(
-                    url(),
-                    usuario,
-                    senha));
+                    this.url(),
+                    this.usuario,
+                    this.senha));
+            this.configurarBanco(connection);
             this.status = true;
 
-        } catch (ClassNotFoundException | SQLException erro) {
-            JOptionPane.showMessageDialog(null, erro.getMessage());
+        } catch (ClassNotFoundException | SQLException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
             return null;
         }
         return connection;
     }
-    
+
     /**
      * Método que encerra a conexão com o banco de dados
      * @return boolean
@@ -80,6 +81,68 @@ public class ConexaoMySql {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
         return false;
+    }
+    
+    /**
+     * Método que inseri um novo registro no banco de dados
+     * @param sql
+     * @return int
+     */
+    public int insertSql(String sql) {
+        int status = 0;
+        System.out.println(status);
+        try {
+            // Seta o stament com o getConnection que chama o prepareStatement
+            this.setPreparedStatement(this.getConnection().prepareStatement(sql));
+            // Executa a query no banco de dados
+            this.getPreparedStatement().executeUpdate(sql);
+            // Consulta o último código inserido na tabela
+            this.setResultSet(this.getPreparedStatement().executeQuery("SELECT last_insert_id();"));
+            // Recupera o valor da primeira coluna da tabela
+            while (this.resultSet.next()) {
+                status = this.resultSet.getInt(1);
+            }
+            return status;
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+        System.out.println(status);
+        return status;
+    }
+
+    /**
+     * Método responsável pela criação do banco de dados e tabelas do mesmo
+     * @param connection
+     */
+    private void configurarBanco(Connection connection) {
+        try {
+            Statement stmt = connection.createStatement();
+            // Cria a base de dados
+            stmt.executeUpdate("CREATE DATABASE IF NOT EXISTS teste;");
+            // Seleciona base de dados
+            stmt.executeUpdate("USE teste;");
+            // Cria tabela curso
+            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS curso ("
+                    + "pk_codigo_curso SERIAL NOT NULL PRIMARY KEY,"
+                    + "curso_descricao VARCHAR(50) NOT NULL,"
+                    + "curso_ementa TEXT"
+                    + ");");
+            // Cria tabela aluno
+            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS aluno ("
+                    + "pk_codigo_aluno SERIAL NOT NULL PRIMARY KEY,"
+                    + "aluno_nome VARCHAR(50) NOT NULL"
+                    + ");");
+            // Cria tabela que relaciona curso e aluno
+            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS curso_aluno ("
+                    + "pk_codigo SERIAL NOT NULL PRIMARY KEY,"
+                    + "fk_aluno BIGINT UNSIGNED,"
+                    + "fk_curso BIGINT UNSIGNED,"
+                    + "FOREIGN KEY (fk_aluno) REFERENCES aluno(pk_codigo_aluno),"
+                    + "FOREIGN KEY (fk_curso) REFERENCES curso(pk_codigo_curso)"
+                    + ");");
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
     }
 
     public ResultSet getResultSet() {
@@ -106,52 +169,12 @@ public class ConexaoMySql {
         this.connection = connection;
     }
 
-    private Statement getStatement() {
+    private PreparedStatement getPreparedStatement() {
         return statement;
     }
 
-    private void setStatement(Statement statement) {
+    private void setPreparedStatement(PreparedStatement statement) {
         this.statement = statement;
-    }
-
-    public String getServidor() {
-        return servidor;
-    }
-
-    public void setServidor(String servidor) {
-        this.servidor = servidor;
-    }
-
-    public String getDatabase() {
-        return database;
-    }
-
-    public void setDatabase(String database) {
-        this.database = database;
-    }
-
-    public String getPorta() {
-        return porta;
-    }
-
-    public void setPorta(String porta) {
-        this.porta = porta;
-    }
-
-    public String getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(String usuario) {
-        this.usuario = usuario;
-    }
-
-    public String getSenha() {
-        return senha;
-    }
-
-    public void setSenha(String senha) {
-        this.senha = senha;
     }
 
 }
