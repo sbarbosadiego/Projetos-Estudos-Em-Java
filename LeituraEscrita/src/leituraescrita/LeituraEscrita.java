@@ -73,8 +73,20 @@ public class LeituraEscrita {
             // Passando o parâmetro true, não é feito a sobrescrição do arquivo
             FileWriter arquivo = new FileWriter(sc.nextLine(), true);
             BufferedWriter buffer = new BufferedWriter(arquivo);
+            System.out.println("====== PARA SALVAR O TEXTO DIGITE \"FFGG\" ======");
             System.out.println("=============== DIGITE NO ARQUIVO ===============");
-            buffer.append(sc.nextLine());
+            int numero = 0;
+            String linha = "";
+            while (numero == 0) {
+                if (linha.contains("FFGG")) {
+                    numero++;
+                    linha.replace("FFGG", "");
+                } else {
+                    linha = sc.nextLine();
+                    linha += "\n";
+                    buffer.append(linha);
+                }
+            }
             buffer.close();
             arquivo.close();
             //sc.close();
