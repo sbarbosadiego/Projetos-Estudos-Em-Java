@@ -10,7 +10,7 @@ import java.io.IOException; // Tratar erros de IO
 import java.util.InputMismatchException;
 
 public class LeituraEscrita {
-    
+
     /**
      * Método para imprimir o menu
      */
@@ -24,7 +24,7 @@ public class LeituraEscrita {
         System.out.println("0 - Sair");
         System.out.print("Informe a opção: ");
     }
-    
+
     /**
      * Método para carregar os métodos contidos nas opções do menu
      * @return int
@@ -46,6 +46,7 @@ public class LeituraEscrita {
                     break;
                 case 3:
                     // Escrever em um arquivo Existente
+                    System.out.print("Digite o local do arquivo: ");
                     criarTxt();
                     break;
                 case 4:
@@ -63,7 +64,7 @@ public class LeituraEscrita {
         }
         return n;
     }
-    
+
     /**
      * Método para criar um novo arquivo de texto
      */
@@ -75,26 +76,24 @@ public class LeituraEscrita {
             BufferedWriter buffer = new BufferedWriter(arquivo);
             System.out.println("====== PARA SALVAR O TEXTO DIGITE \"FFGG\" ======");
             System.out.println("=============== DIGITE NO ARQUIVO ===============");
-            int numero = 0;
+            boolean salvar = false;
             String linha = "";
-            while (numero == 0) {
+            do {
+                linha = sc.nextLine();
                 if (linha.contains("FFGG")) {
-                    numero++;
-                    linha.replace("FFGG", "");
+                    salvar = true;
                 } else {
-                    linha = sc.nextLine();
                     linha += "\n";
                     buffer.append(linha);
                 }
-            }
+            } while (salvar == false);
             buffer.close();
             arquivo.close();
-            //sc.close();
         } catch (IOException e) {
             System.out.println("Amigo, não zoar");
         }
     }
-    
+
     /**
      * Método que sobrescreve o conteúdo de um arquivo de texto existente
      */
@@ -105,7 +104,17 @@ public class LeituraEscrita {
             FileWriter arquivo = new FileWriter(sc.nextLine(), false);
             BufferedWriter buffer = new BufferedWriter(arquivo);
             System.out.println("=============== DIGITE NO ARQUIVO ===============");
-            buffer.append(sc.nextLine());
+            boolean salvar = false;
+            String linha = "";
+            do {
+                linha = sc.nextLine();
+                if (linha.contains("FFGG")) {
+                    salvar = true;
+                } else {
+                    linha += "\n";
+                    buffer.append(linha);
+                }
+            } while (salvar == false);
             buffer.close();
             arquivo.close();
             //sc.close();
@@ -113,7 +122,7 @@ public class LeituraEscrita {
             System.out.println("Amigo, não zoar");
         }
     }
-    
+
     /**
      * Método que lê o contéudo do arquivo de texto
      */
