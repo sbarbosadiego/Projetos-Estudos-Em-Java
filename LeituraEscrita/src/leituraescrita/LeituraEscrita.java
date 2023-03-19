@@ -58,6 +58,8 @@ public class LeituraEscrita {
                     // Encerra o programa
                     System.out.println("Fim do programa!");
                     break;
+                default:
+                    System.out.println("Informe a opção: ");
             }
         } catch (InputMismatchException e) {
             System.out.println("Erro! O valor digitado não é válido. Tente novamente!");
@@ -74,7 +76,7 @@ public class LeituraEscrita {
             // Passando o parâmetro true, não é feito a sobrescrição do arquivo
             FileWriter arquivo = new FileWriter(sc.nextLine(), true);
             BufferedWriter buffer = new BufferedWriter(arquivo);
-            System.out.println("====== PARA SALVAR O TEXTO DIGITE \"FFGG\" ======");
+            System.out.println("======= PARA SALVAR O TEXTO DIGITE \"FFGG\" =======");
             System.out.println("=============== DIGITE NO ARQUIVO ===============");
             boolean salvar = false;
             String linha = "";
@@ -90,7 +92,7 @@ public class LeituraEscrita {
             buffer.close();
             arquivo.close();
         } catch (IOException e) {
-            System.out.println("Amigo, não zoar");
+            System.out.println("Não foi informado nenhum caminho de diretório válido");
         }
     }
 
@@ -103,6 +105,7 @@ public class LeituraEscrita {
             // Passando o parâmetro true, não é feito a sobrescrição do arquivo
             FileWriter arquivo = new FileWriter(sc.nextLine(), false);
             BufferedWriter buffer = new BufferedWriter(arquivo);
+            System.out.println("======= PARA SALVAR O TEXTO DIGITE \"FFGG\" =======");
             System.out.println("=============== DIGITE NO ARQUIVO ===============");
             boolean salvar = false;
             String linha = "";
@@ -119,7 +122,7 @@ public class LeituraEscrita {
             arquivo.close();
             //sc.close();
         } catch (IOException e) {
-            System.out.println("Amigo, não zoar");
+            System.out.println("Não foi informado nenhum caminho de diretório válido");
         }
     }
 
@@ -149,7 +152,7 @@ public class LeituraEscrita {
 
     public static void main(String[] args) {
 
-        int programa = 20;
+        int programa = 5;
         while (programa != 0) {
             menuOpcoes();
             try {
