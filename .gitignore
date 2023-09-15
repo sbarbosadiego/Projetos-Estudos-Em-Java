@@ -1,2 +1,6 @@
 /Conexao/dist/
+<<<<<<< HEAD
+=======
+/Conexao/src/db.properties
+>>>>>>> e881ba2ba3080947b9768bc2afa294c50385c66e
 /Conexao/db.properties
